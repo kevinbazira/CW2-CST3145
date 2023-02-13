@@ -239,8 +239,34 @@
                     return errorsExist;
                 },
                 checkoutSubmit(){
-                    // show confirmation message when order has been submitted
+                    // post order and show confirmation message when order has been submitted
+                    this.postOrders();
                     alert("Order Submitted! :)");
+                },
+                postOrders(){
+                    // POST request to an endpoint that saves them into the db
+                    fetch("http://localhost:3000/collection/orders", {
+                        method: "POST",
+                        body: JSON.stringify([
+                            {
+                                name: "Baz",
+                                phoneNumber: 4040,
+                                lessonID: 6,
+                                spaces: 3
+                            },
+                            {
+                                name: "Kev",
+                                phoneNumber: 3030,
+                                lessonID: 4,
+                                spaces: 3
+                            }
+                        ]),
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(json => console.log(json));
                 },
                 sortLessons(lessonsArray){
                     // sort lessons in descending or ascending order

@@ -37,8 +37,9 @@ app.get("/collection/:collectionName", (request, response, next)=>{
 });
 
 // post route to add orders into mongodb collection (used for endpoint http://localhost:3000/collection/orders)
+// NB: use insertOne to enter one item to the db at a time or insertMany to enter multiple items to the db at once
 app.post("/collection/:collectionName" , (request, response, next)=>{
-    request.collection.insertOne(request.body, (e, results) => {
+    request.collection.insertMany(request.body, (e, results) => {
         if (e) return next(e);
         response.send(results.ops);
     });
