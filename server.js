@@ -22,16 +22,24 @@ MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongod
 // route for "/" path that returns index.html
 app.use(express.static("./"));
 
-// get route to pick the collection name from URL parameter (i.e lessons from http://localhost:3000/collection/lessons)
+// get route to pick the collection name from URL parameter (e.g lessons from http://localhost:3000/collection/lessons)
 app.param("collectionName", (request, response, next, collectionName)=>{
     request.collection = db.collection(collectionName);
     return next();
 });
 
-// get route to retrieve all objects from collection
+// get route to retrieve all objects from collection (used for endpoint http://localhost:3000/collection/lessons)
 app.get("/collection/:collectionName", (request, response, next)=>{
     request.collection.find({}).toArray((e, results) => {
         if (e) return next();
         response.send(results);
+    });
+});
+
+// post route to add orders into mongodb collection (used for endpoint http://localhost:3000/collection/orders)
+app.post("/collection/:collectionName" , (request, response, next)=>{
+    request.collection.insertOne(request.body, (e, results) => {
+        if (e) return next(e);
+        response.send(results.ops);
     });
 });
