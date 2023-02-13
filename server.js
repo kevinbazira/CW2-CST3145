@@ -6,6 +6,9 @@ const MongoClient = require("mongodb").MongoClient;
 // instantiate express as app
 const app = express();
 
+// express configuration to extract parameters from the requests
+app.use(express.json());
+
 // route for "/" path that returns index.html
 app.use(express.static("./"));
 
