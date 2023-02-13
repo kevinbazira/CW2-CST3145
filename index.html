@@ -185,7 +185,7 @@
             el: "#app",
             data: {
                 sitename: "CW2-CST3145",
-                lessons: lessons,
+                lessons: [],
                 cart: [],
                 sortBy: "",
                 orderBy: "ascending",
@@ -288,6 +288,12 @@
                     sortedSearchedSubjects = this.sortLessons(searchedSubjects);
                     return sortedSearchedSubjects;
                 }
+            },
+            created() {
+                // GET request to fetch lessons JSON data from serever and add it to lessons in Vue data
+                fetch("http://localhost:3000/lessons")
+                    .then(response => response.json())
+                    .then(data => (this.lessons = data));
             }
         });
     </script>
