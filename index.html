@@ -194,7 +194,8 @@
                     fullName: "",
                     phoneNumber: ""
                 },
-                searchTerm: ""
+                searchTerm: "",
+                orders: []
             },
             methods: {
                 addToCart(lesson){
@@ -244,23 +245,10 @@
                     alert("Order Submitted! :)");
                 },
                 postOrders(){
-                    // POST request to an endpoint that saves them into the db
+                    // POST request to an endpoint that saves orders into the db
                     fetch("http://localhost:3000/collection/orders", {
                         method: "POST",
-                        body: JSON.stringify([
-                            {
-                                name: "Baz",
-                                phoneNumber: 4040,
-                                lessonID: 6,
-                                spaces: 3
-                            },
-                            {
-                                name: "Kev",
-                                phoneNumber: 3030,
-                                lessonID: 4,
-                                spaces: 3
-                            }
-                        ]),
+                        body: JSON.stringify(this.orders),
                         headers: {
                             "Content-type": "application/json; charset=UTF-8"
                         }
@@ -312,6 +300,30 @@
                     }
                     sortedSearchedSubjects = this.sortLessons(searchedSubjects);
                     return sortedSearchedSubjects;
+                },
+                orderItems(){
+                    // compute order items when user is on checkout page and add them to orders
+                    if(this.showShopPage === false){
+                        this.cart.forEach(item => {
+                            // for each item in the cart array return an object with the schema below
+                            let orderItem = {
+                                "name": "",
+		                        "phoneNumber": "",
+                                "lessonID": item,
+                                "spaces": 1
+                            }
+                            this.orders.push(orderItem);
+                        });
+                    }
+                },
+                updateOrderItems(){
+                    // update order items with name and phone number whenever the user changes them on checkout page
+                    if(this.showShopPage === false){
+                        this.orders.forEach(item => {
+                            item["name"] = this.checkout.fullName;
+                            item["phoneNumber"] = this.checkout.phoneNumber;
+                        });
+                    }
                 }
             },
             created() {
