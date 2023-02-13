@@ -1,8 +1,23 @@
 // import express node module
 const express = require("express");
+// import client from mongodb node module
+const MongoClient = require("mongodb").MongoClient;
 
 // instantiate express as app
 const app = express();
+
+// route for "/" path that returns index.html
+app.use(express.static("./"));
+
+// start express server on port 3000 and print message to console
+app.listen(3000, ()=>{
+    console.log("App started on 3000 ");
+});
+
+// connection string to mongodb database
+MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongodb.net", (error, client) => {
+    db = client.db("webstore");
+});
 
 // get route for "/lessons" path that returns lessons JSON object
 app.get("/lessons", (request, response, next)=>{
@@ -89,12 +104,4 @@ app.get("/lessons", (request, response, next)=>{
         }
     ];
     response.send(lessons);
-});
-
-// route for "/" path that returns index.html
-app.use(express.static("./"));
-
-// start express server on port 3000 and print message to console
-app.listen(3000, ()=>{
-    console.log("App started on 3000 ");
 });
