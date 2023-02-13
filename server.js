@@ -9,17 +9,23 @@ const app = express();
 // express configuration to extract parameters from the requests
 app.use(express.json());
 
-// route for "/" path that returns index.html
-app.use(express.static("./"));
-
 // start express server on port 3000 and print message to console
 app.listen(3000, ()=>{
     console.log("App started on 3000 ");
 });
 
-// connection string to mongodb database
+// connection string to remote mongodb database
 MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongodb.net", (error, client) => {
     db = client.db("webstore");
+});
+
+// route for "/" path that returns index.html
+app.use(express.static("./"));
+
+// get route to pick the collection name from URL parameter
+app.param("collectionName", (request, response, next, collectionName)=>{
+    request.collection = db.collection(collectionName);
+    return next();
 });
 
 // get route for "/lessons" path that returns lessons JSON object
