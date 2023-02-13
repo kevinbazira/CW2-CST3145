@@ -1,0 +1,12 @@
+{
+    "name": "CW2-CST3145",
+    "author": "Kevin Bazira",
+    "private": true,
+    "version": "0.0.1",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}
