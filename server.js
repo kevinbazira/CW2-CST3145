@@ -22,7 +22,7 @@ MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongod
 // route for "/" path that returns index.html
 app.use(express.static("./"));
 
-// get route to pick the collection name from URL parameter
+// get route to pick the collection name from URL parameter (i.e lessons from http://localhost:3000/collection/lessons)
 app.param("collectionName", (request, response, next, collectionName)=>{
     request.collection = db.collection(collectionName);
     return next();
