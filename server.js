@@ -28,6 +28,14 @@ app.param("collectionName", (request, response, next, collectionName)=>{
     return next();
 });
 
+// get route to retrieve all objects from collection
+app.get("/collection/:collectionName", (request, response, next)=>{
+    request.collection.find({}).toArray((e, results) => {
+        if (e) return next();
+        response.send(results);
+    });
+});
+
 // get route for "/lessons" path that returns lessons JSON object
 app.get("/lessons", (request, response, next)=>{
     const lessons = [
