@@ -87,7 +87,7 @@
                             </div>
                         </div>
                        
-                        <div class="col-lg-4 col-md-6 col-sm-12 pb-1" v-for="lesson in (searchedLessons.length === 0 ? sortedLessons : searchedLessons)">
+                        <div class="col-lg-4 col-md-6 col-sm-12 pb-1" v-for="lesson in (sortedSearchedSubjects.length === 0 ? sortedLessons : sortedSearchedSubjects)">
                                 <div class="card product-item border-0 mb-4">
                                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                         <img class="img-fluid w-100" v-bind:src="lesson.images" v-bind:alt="lesson.subject">
@@ -195,7 +195,8 @@
                     phoneNumber: ""
                 },
                 searchTerm: "",
-                orders: []
+                orders: [],
+                sortedSearchedSubjects: []
             },
             methods: {
                 addToCart(lesson){
@@ -300,20 +301,12 @@
                     return this.sortLessons(lessonsArray);
                 },
                 searchedLessons(){
-                    // lessons that have been searched also catering to the sorting
-                    let searchedSubjects = [];
                     if(this.searchTerm !== ""){
-                        for(let i = 0;  i < lessons.length; i++){
-                            let lowerCaseSubjectTitle = lessons[i].subject.toLowerCase();
-                            let lowerCaseSubjectLocation = lessons[i].location.toLowerCase();
-                            let lowerCaseSearchTerm = this.searchTerm.toLowerCase();
-                            if(lowerCaseSubjectTitle.includes(lowerCaseSearchTerm) || lowerCaseSubjectLocation.includes(lowerCaseSearchTerm)){
-                                searchedSubjects.push(lessons[i])
-                            }
-                        }
+                        // GET request to search lessons JSON data from server and add it to sortedSearchedSubjects in Vue data
+                        fetch("http://localhost:3000/search/" + this.searchTerm)
+                            .then(response => response.json())
+                            .then(data => (this.sortedSearchedSubjects = data));
                     }
-                    sortedSearchedSubjects = this.sortLessons(searchedSubjects);
-                    return sortedSearchedSubjects;
                 },
                 orderItems(){
                     // compute order items when user is on checkout page and add them to orders
@@ -341,7 +334,7 @@
                 }
             },
             created() {
-                // GET request to fetch lessons JSON data from serever and add it to lessons in Vue data
+                // GET request to fetch lessons JSON data from server and add it to lessons in Vue data
                 fetch("http://localhost:3000/collection/lessons")
                     .then(response => response.json())
                     .then(data => (this.lessons = data));
