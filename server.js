@@ -67,7 +67,31 @@ app.put("/collection/:collectionName/update", (request, response, next)=>{
     });
 });
 
-// static file middleware that returns lesson images, or an error message if the image file does not exist
+// get route to search lessons from db collection (used for endpoint http://localhost:3000/collection/lessons/dev/price/descending)
+app.get("/collection/:collectionName/:searchTerm/:sortAspect/:sortAscDesc", (request, response, next) => {
+    // TODO: Validate params
+    let searchTerm = request.params.searchTerm;
+    let sortAspect = request.params.sortAspect;
+    let sortDirection = 1;
+    if (request.params.sortAscDesc === "descending") {
+        sortDirection = -1;
+    }
+    request.collection.find(
+        {$or:[ // find documents where subject OR location includes search term
+            { subject: { $regex: searchTerm, $options: "si" } }, // i === case-insenitive, s === zero or more occurrence of whitespace characters
+            { location: { $regex: searchTerm, $options: "si" } }
+        ]},
+        { // sort search based on sortAspect and sortDirection
+            sort: [[sortAspect, sortDirection]]
+        }).toArray((e, results) => {
+        if (e) {
+            return next(e);
+        }
+        response.send(results);
+    });
+});
+
+// static file middleware that returns lesson images, or an error message if the image file does not exist. NB: should be the last middleware OTW it causes interruptions.
 app.use((request, response, next)=>{
     const filePath = path.join(__dirname, "img", request.url); // the static folder is named "img"
     fs.stat(filePath, (error, fileInfo)=>{
