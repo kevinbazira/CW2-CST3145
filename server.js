@@ -1,7 +1,11 @@
 // import express node module
 const express = require("express");
+// import file system (i.e fs) node module
+const fs = require("fs");
 // import client from mongodb node module
 const MongoClient = require("mongodb").MongoClient;
+// import path node module
+const path = require("path");
 
 // instantiate express as app
 const app = express();
@@ -54,5 +58,22 @@ app.put("/collection/:collectionName/update", (request, response, next)=>{
             {$inc: { spaces: -1 }}, // the $inc operator increments the spaces field by -1
             {safe: true, multi: false}
         );
+    });
+});
+
+// static file middleware that returns lesson images, or an error message if the image file does not exist
+app.use((request, response, next)=>{
+    const filePath = path.join(__dirname, "img", request.url); // the static folder is named "img"
+    fs.stat(filePath, (error, fileInfo)=>{
+        if(error){
+            response.send("Error 404 : Oops! Requested file doesn't exist. Please check file name.");
+            return;
+        }
+
+        if(fileInfo.isFile()){
+            response.sendFile(filePath);
+        } else {
+            next();
+        }
     });
 });
