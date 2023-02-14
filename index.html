@@ -242,6 +242,8 @@
                 checkoutSubmit(){
                     // post order and show confirmation message when order has been submitted
                     this.postOrders();
+                    // update lesson spaces for ordered items in the db
+                    this.putLessons();
                     alert("Order Submitted! :)");
                 },
                 postOrders(){
@@ -249,6 +251,18 @@
                     fetch("http://localhost:3000/collection/orders", {
                         method: "POST",
                         body: JSON.stringify(this.orders),
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(json => console.log(json));
+                },
+                putLessons(){
+                    // PUT request to an endpoint that updates lesson spaces in the db
+                    fetch("http://localhost:3000/collection/lessons/update", {
+                        method: "PUT",
+                        body: JSON.stringify(this.cart),
                         headers: {
                             "Content-type": "application/json; charset=UTF-8"
                         }

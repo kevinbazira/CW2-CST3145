@@ -44,3 +44,15 @@ app.post("/collection/:collectionName" , (request, response, next)=>{
         response.send(results.ops);
     });
 });
+
+// put route to edit lesson spaces for ordered item IDs in the cart (used for endpoint http://localhost:3000/collection/lessons/update)
+app.put("/collection/:collectionName/update", (request, response, next)=>{
+    orderedItems = request.body;
+    orderedItems.forEach(item => {
+        request.collection.updateOne(
+            {id: item}, // specify which document to update based on itemID
+            {$inc: { spaces: -1 }}, // the $inc operator increments the spaces field by -1
+            {safe: true, multi: false}
+        );
+    });
+});
