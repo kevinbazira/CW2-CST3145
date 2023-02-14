@@ -18,6 +18,12 @@ app.listen(3000, ()=>{
     console.log("App started on 3000 ");
 });
 
+// a ‘logger’ middleware that outputs all requests to the server console
+app.use((request, response, next)=>{
+    console.log("[LOGGER] Request URL: " + request.url);
+    return next();
+});
+
 // connection string to remote mongodb database
 MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongodb.net", (error, client) => {
     db = client.db("webstore");
