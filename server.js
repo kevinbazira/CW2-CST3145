@@ -23,9 +23,9 @@ app.use((request, response, next)=>{
 // express configuration to extract parameters from the requests
 app.use(express.json());
 
-// start express server on port 3000 and print message to console
-app.listen(3000, ()=>{
-    console.log("App started on 3000 ");
+// start express server on port 3000 or port that heroku dinamicaly sets and print message to console
+app.listen(process.env.PORT || 3000, ()=>{
+    console.log("App started on 3000 OR " + process.env.PORT);
 });
 
 // a ‘logger’ middleware that outputs all requests to the server console
