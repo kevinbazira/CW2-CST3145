@@ -241,35 +241,30 @@
                     return errorsExist;
                 },
                 checkoutSubmit(){
-                    // post order and show confirmation message when order has been submitted
-                    this.postOrders();
-                    // update lesson spaces for ordered items in the db
-                    this.putLessons();
+                    // post order, update lesson spaces, and show confirmation message when order has been submitted
+                    Promise.all([
+                        // POST request to an endpoint that saves orders into the db
+                        fetch("https://cw2-cst3145-2023.herokuapp.com/collection/orders", {
+                            method: "POST",
+                            body: JSON.stringify(this.orders),
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8"
+                            }
+                        }),
+                        // PUT request to an endpoint that updates lesson spaces in the db
+                        fetch("https://cw2-cst3145-2023.herokuapp.com/collection/lessons/update", {
+                            method: "PUT",
+                            body: JSON.stringify(this.cart),
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8"
+                            }
+                        })
+                    ]).then(([postResponse, putResponse]) => {
+                            // won't do much with these responses for now
+                    }).catch((e) => {
+                            console.log(e);
+                    });
                     alert("Order Submitted! :)");
-                },
-                postOrders(){
-                    // POST request to an endpoint that saves orders into the db
-                    fetch("https://cw2-cst3145-2023.herokuapp.com/collection/orders", {
-                        method: "POST",
-                        body: JSON.stringify(this.orders),
-                        headers: {
-                            "Content-type": "application/json; charset=UTF-8"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(json => console.log(json));
-                },
-                putLessons(){
-                    // PUT request to an endpoint that updates lesson spaces in the db
-                    fetch("https://cw2-cst3145-2023.herokuapp.com/collection/lessons/update", {
-                        method: "PUT",
-                        body: JSON.stringify(this.cart),
-                        headers: {
-                            "Content-type": "application/json; charset=UTF-8"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(json => console.log(json));
                 },
                 sortLessons(lessonsArray){
                     // sort lessons in descending or ascending order
