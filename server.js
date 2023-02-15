@@ -75,6 +75,8 @@ app.put("/collection/:collectionName/update", (request, response, next)=>{
             {safe: true, multi: false}
         );
     });
+    if (e) return next(e);
+    response.send(results);
 });
 
 // get route to search lessons from db collection (used for endpoint http://localhost:3000/collection/lessons/dev/price/descending)
