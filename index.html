@@ -241,16 +241,11 @@
                     return errorsExist;
                 },
                 checkoutSubmit(){
-                    // post order, update lesson spaces, and show confirmation message when order has been submitted
+                    // update order items in vue data then: update lesson spaces, post order, and show confirmation message when order has been submitted
+                    this.orderItems();
+                    this.updateOrderItems();
+                    // POST request to an endpoint that saves orders into the db
                     Promise.all([
-                        // POST request to an endpoint that saves orders into the db
-                        fetch("https://cw2-cst3145-2023.herokuapp.com/collection/orders", {
-                            method: "POST",
-                            body: JSON.stringify(this.orders),
-                            headers: {
-                                "Content-type": "application/json; charset=UTF-8"
-                            }
-                        }),
                         // PUT request to an endpoint that updates lesson spaces in the db
                         fetch("https://cw2-cst3145-2023.herokuapp.com/collection/lessons/update", {
                             method: "PUT",
@@ -258,9 +253,19 @@
                             headers: {
                                 "Content-type": "application/json; charset=UTF-8"
                             }
+                        }),
+                        // POST request to an endpoint that saves orders into the db
+                        fetch("https://cw2-cst3145-2023.herokuapp.com/collection/orders", {
+                            method: "POST",
+                            body: JSON.stringify(this.orders),
+                            headers: {
+                                "Content-type": "application/json; charset=UTF-8"
+                            }
                         })
-                    ]).then(([postResponse, putResponse]) => {
+                    ]).then(([putResponse, postResponse]) => {
                             // won't do much with these responses for now
+                            response => response.json();
+                            response => response.json();
                     }).catch((e) => {
                             console.log(e);
                     });
@@ -282,6 +287,28 @@
                     }else if (this.orderBy === "descending"){
                         lessonsArray.sort(compare);
                         return lessonsArray.reverse();
+                    }
+                },
+                orderItems(){
+                    // compute order items and add them to orders
+                    this.cart.forEach(item => {
+                        // for each item in the cart array return an object with the schema below
+                        let orderItem = {
+                            "name": "",
+                            "phoneNumber": "",
+                            "lessonID": item,
+                            "spaces": 1
+                        }
+                        this.orders.push(orderItem);
+                    });
+                },
+                updateOrderItems(){
+                    // update order items with name and phone number whenever the user changes them on checkout page
+                    if(this.showShopPage === false){
+                        this.orders.forEach(item => {
+                            item["name"] = this.checkout.fullName;
+                            item["phoneNumber"] = this.checkout.phoneNumber;
+                        });
                     }
                 }
             },
@@ -309,30 +336,6 @@
                     }
                     // return this.sortedSearchedSubjects after feeding them with data from the db
                     return this.sortedSearchedSubjects;
-                },
-                orderItems(){
-                    // compute order items when user is on checkout page and add them to orders
-                    if(this.showShopPage === false){
-                        this.cart.forEach(item => {
-                            // for each item in the cart array return an object with the schema below
-                            let orderItem = {
-                                "name": "",
-		                        "phoneNumber": "",
-                                "lessonID": item,
-                                "spaces": 1
-                            }
-                            this.orders.push(orderItem);
-                        });
-                    }
-                },
-                updateOrderItems(){
-                    // update order items with name and phone number whenever the user changes them on checkout page
-                    if(this.showShopPage === false){
-                        this.orders.forEach(item => {
-                            item["name"] = this.checkout.fullName;
-                            item["phoneNumber"] = this.checkout.phoneNumber;
-                        });
-                    }
                 }
             },
             created() {

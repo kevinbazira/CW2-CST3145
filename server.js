@@ -72,11 +72,16 @@ app.put("/collection/:collectionName/update", (request, response, next)=>{
         request.collection.updateOne(
             {id: item}, // specify which document to update based on itemID
             {$inc: { spaces: -1 }}, // the $inc operator increments the spaces field by -1
-            {safe: true, multi: false}
+            {safe: true, multi: false},
+            (e, result) => {
+                if (e) {
+                    console.log(e);
+                } else {
+                    response.send((result.matchedCount === 1) ? {msg: "success"} : {msg: "error"});
+                }
+            }
         );
     });
-    if (e) return next(e);
-    response.send(results);
 });
 
 // get route to search lessons from db collection (used for endpoint http://localhost:3000/collection/lessons/dev/price/descending)
