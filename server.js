@@ -7,6 +7,10 @@ const MongoClient = require("mongodb").MongoClient;
 // import path node module
 const path = require("path");
 
+// import dotenv node module
+const dotenv = require("dotenv");
+dotenv.config();
+
 // instantiate express as app
 const app = express();
 
@@ -31,7 +35,7 @@ app.use((request, response, next)=>{
 });
 
 // connection string to remote mongodb database
-MongoClient.connect("mongodb+srv://joanpatience:Admin123@cluster0.05qbvez.mongodb.net", (error, client) => {
+MongoClient.connect("mongodb+srv://" + process.env.REMOTE_MONGODB_CREDENTIALS + "@cluster0.05qbvez.mongodb.net", (error, client) => {
     db = client.db("webstore");
 });
 
