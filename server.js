@@ -10,6 +10,12 @@ const path = require("path");
 // instantiate express as app
 const app = express();
 
+// enable CORS so that different domains can access files/resources on this server
+app.use((request, response, next)=>{
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+});
+
 // express configuration to extract parameters from the requests
 app.use(express.json());
 
