@@ -3,6 +3,7 @@
     "author": "Kevin Bazira",
     "private": true,
     "version": "0.0.1",
+	"main": "server.js",
     "scripts": {
         "start": "node server.js"
     },
